@@ -9,6 +9,10 @@ class PlayerCollection:
         """Возвращает количество игроков"""
         return len(self._items)
 
+    def __iter__(self):
+        """Позволяет итерироваться по коллекции"""
+        return iter(self._items)
+
     def __getitem__(self, index: int | slice) -> Player:
         """
         Поддержка индексов и срезов.
