@@ -5,21 +5,6 @@ class GooseCollection:
     def __init__(self):
         self._items: list[Goose] = []
 
-    def __len__(self):
-        """Количество гусей"""
-        return len(self._items)
-
-    def __iter__(self):
-        """Итерация по гусям"""
-        return iter(self._items)
-
-    def __getitem__(self, index):
-        """Доступ по индексу и срезу"""
-        return self._items[index]
-
-    def __repr__(self):
-        return f"GooseCollection({self._items})"
-
     def add(self, goose: Goose) -> None:
         """Добавить гуся"""
         self._items.append(goose)
@@ -42,3 +27,18 @@ class GooseCollection:
             return None
         import random
         return random.choice(self._items)
+
+    def __len__(self):
+        """Количество гусей"""
+        return len(self._items)
+
+    def __iter__(self):
+        """Итерация по гусям"""
+        return iter(self._items)
+
+    def __getitem__(self, index):
+        """Доступ по индексу и срезу"""
+        return self._items[index]
+
+    def __repr__(self):
+        return f"GooseCollection({self._items})"

@@ -2,31 +2,6 @@ class CasinoBalance:
     def __init__(self):
         self._balances: dict[str, int] = {}
 
-    def __len__(self):
-        """Сколько игроков хранится"""
-        return len(self._balances)
-
-    def __iter__(self):
-        """Итерация по именам игроков"""
-        return iter(self._balances)
-
-    def __getitem__(self, name: str) -> int:
-        """Получение баланса по имени"""
-        return self._balances[name]
-
-    def __setitem__(self, name: str, new_balance: int) -> None:
-        """Изменение баланса + логирование"""
-        old = self._balances.get(name, None)
-        self._balances[name] = new_balance
-
-        if old is None:
-            print(f"[BALANCE] Добавлен игрок '{name}' с балансом {new_balance}")
-        else:
-            print(f"[BALANCE] {name}: {old} → {new_balance}")
-
-    def __repr__(self):
-        return f"CasinoBalance({self._balances})"
-
     def update_balance(self, name: str, delta: int):
         """Удобный метод для изменения баланса"""
         if name not in self._balances:
@@ -43,5 +18,30 @@ class CasinoBalance:
         """Удалить игрока (с логом)"""
         if name not in self._balances:
             raise KeyError(f"Игрок '{name}' не найден")
-        print(f"[BALANCE] Игрок '{name}' удалён")
+        print(f"Игрок '{name}' удалён")
         del self._balances[name]
+
+    def __len__(self):
+        """Сколько игроков хранится"""
+        return len(self._balances)
+
+    def __iter__(self):
+        """Итерация по именам игроков"""
+        return iter(self._balances)
+
+    def __getitem__(self, name: str) -> int:
+        """Получение баланса по имени"""
+        return self._balances[name]
+
+    def __setitem__(self, name: str, new_balance: int) -> None:
+        """Изменение баланса"""
+        old = self._balances.get(name, None)
+        self._balances[name] = new_balance
+
+        if old is None:
+            print(f"Добавлен игрок '{name}' с балансом {new_balance}")
+        else:
+            print(f"{name}: {old} -> {new_balance}")
+
+    def __repr__(self):
+        return f"CasinoBalance({self._balances})"
