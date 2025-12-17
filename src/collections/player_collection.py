@@ -1,4 +1,4 @@
-from src.models.player import Player
+from src.objects.player import Player
 
 
 class PlayerCollection:

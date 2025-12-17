@@ -1,10 +1,10 @@
+from src.simulation import run_simulation
 
 
 def main() -> None:
-    return
+    run_simulation(steps=20,seed=52)
 
 
 
 if __name__ == "__main__":
-
-    print((9 + 1) % 4 + 1)
+    main()

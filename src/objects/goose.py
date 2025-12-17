@@ -1,5 +1,5 @@
 from src.collections.player_collection import PlayerCollection
-from src.models.player import Player
+from src.objects.player import Player
 
 
 class Goose:
@@ -8,7 +8,7 @@ class Goose:
         self.honk_volume: int = honk_volume
 
     def honk(self) -> str:
-        return f"{self.name} HONK с громкостью {self.honk_volume:.1f})"
+        return f"{self.name} HONK с громкостью {self.honk_volume})"
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}(name={self.name}, honk_volume={self.honk_volume})"
@@ -28,7 +28,7 @@ class WarGoose(Goose):
 
 
 class HonkGoose(Goose):
-    def super_honk(self, players: PlayerCollection) -> None:
+    def super_honk(self, players: PlayerCollection) -> str:
         """
         Гусь громко кричит и у всех игроков уменьшается баланс
 
@@ -40,4 +40,4 @@ class HonkGoose(Goose):
         for player in players:
             player.change_balance(-loss)
 
-        print(f"{self.name} очень громко закричал! Все игроки потеряли {loss}$!")
+        return f"{self.name} очень громко закричал! Все игроки потеряли {loss}$!"

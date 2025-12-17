@@ -39,9 +39,9 @@ class CasinoBalance:
         self._balances[name] = new_balance
 
         if old is None:
-            print(f"Добавлен игрок '{name}' с балансом {new_balance}")
+            print(f"Добавлен игрок '{name}' с балансом {new_balance}$")
         else:
-            print(f"{name}: {old} -> {new_balance}")
+            print(f"{name}: {old}$ -> {new_balance}$")
 
     def __repr__(self):
-        return f"CasinoBalance({self._balances})"
+        return f"CasinoBalance({self._balances}$)"

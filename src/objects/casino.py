@@ -3,8 +3,8 @@ import random
 from src.collections.casino_balance import CasinoBalance
 from src.collections.goose_collection import GooseCollection
 from src.collections.player_collection import PlayerCollection
-from src.models.goose import Goose, HonkGoose, WarGoose
-from src.models.player import Player
+from src.objects.goose import Goose, HonkGoose, WarGoose
+from src.objects.player import Player
 
 
 class Casino:
@@ -19,9 +19,9 @@ class Casino:
         self.balance[p.name] = p.balance
         return p
 
-
     def register_goose(self, goose: Goose) -> Goose:
         self.geese.add(goose)
+        print(f"Добавлен гусь '{goose.name}' (тип={goose.__class__.__name__}, honk={goose.honk_volume})")
         return goose
 
     def event_player_bet(self):
@@ -31,11 +31,10 @@ class Casino:
 
         player = random.choice(list(self.players))
         bet = random.randint(5, 50)
-
         player.change_balance(-bet)
-        self.balance[player.name] = player.balance
 
-        print(f"{player.name} делает ставку {bet}")
+        print(f"{player.name} делает ставку {bet}$")
+        self.balance[player.name] = player.balance
 
     def event_player_win(self):
         if len(self.players) == 0:
@@ -45,10 +44,9 @@ class Casino:
         player = random.choice(list(self.players))
         win = random.randint(0, 100)
         player.change_balance(win)
+
+        print(f"{player.name} выигрывает {win}$")
         self.balance[player.name] = player.balance
-
-        print(f"{player.name} выигрывает {win}")
-
 
     def event_goose_attack(self):
         war_geese = [g for g in self.geese if isinstance(g, WarGoose)]
@@ -60,20 +58,20 @@ class Casino:
         player = random.choice(list(self.players))
 
         stolen = goose.attack(player)
+
+        print(f"{stolen}")
         self.balance[player.name] = player.balance
 
-        print(f"{goose.name} атакует {player.name}, украл {stolen}$")
-
-    def event_goose_honk(self):
+    def event_goose_super_honk(self):
         honk_geese = [g for g in self.geese if isinstance(g, HonkGoose)]
         if len(honk_geese) == 0 or len(self.players) == 0:
             print("Пока нет HonkGoose или игроков")
             return
 
         goose = random.choice(honk_geese)
-        special_goose = goose.special_honk(self.players)
+        special_goose = goose.super_honk(self.players)
         print(f"{special_goose}")
-        # обновляем balance казино после special_honk
+        # обновляем balance казино после super_honk
         for p in self.players:
             self.balance[p.name] = p.balance
 
@@ -87,16 +85,16 @@ class Casino:
 
         stolen = random.randint(1, 20)
         player.change_balance(-stolen)
-        self.balance[player.name] = player.balance
 
         print(f"{goose.name} крадёт {stolen}$ у {player.name}")
+        self.balance[player.name] = player.balance
 
     def simulate_step(self):
         events = [
             self.event_player_bet,
             self.event_player_win,
             self.event_goose_attack,
-            self.event_goose_honk,
+            self.event_goose_super_honk,
             self.event_steal,
         ]
         random.choice(events)()

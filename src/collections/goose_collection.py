@@ -1,4 +1,4 @@
-from src.models.goose import Goose
+from src.objects.goose import Goose
 
 
 class GooseCollection:
