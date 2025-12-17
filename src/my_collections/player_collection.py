@@ -28,6 +28,11 @@ class PlayerCollection:
                 return p
         return None
 
+    def get_by_index(self, n: int) -> Player | None:
+        if n < 0 or n >= len(self._items):
+            return None
+        return self._items[n]
+
     def __len__(self) -> int:
         """Возвращает количество игроков"""
         return len(self._items)
@@ -38,7 +43,7 @@ class PlayerCollection:
 
     def __getitem__(self, index: int | slice) -> Player:
         """
-        Поддержка индексов и срезов.
-        index может быть int или slice.
+        Поддержка индексов и срезов
+        index может быть int или slice
         """
         return self._items[index]

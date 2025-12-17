@@ -1,5 +1,8 @@
-from src.collections.player_collection import PlayerCollection
+import logging
+from src.my_collections.player_collection import PlayerCollection
 from src.objects.player import Player
+
+logger = logging.getLogger(__name__)
 
 
 class Goose:
@@ -16,28 +19,15 @@ class Goose:
 
 class WarGoose(Goose):
     def attack(self, player: Player) -> str:
-        """
-        Отнимаем у игрока часть денег
-
-        :param player: Игрок
-        :return: сколько украли $
-        """
         damage: int = self.honk_volume * 10
         player.change_balance(-damage)
         return f"{self.name} атакует {player.name} и отнимает {damage}$!"
 
 
 class HonkGoose(Goose):
-    def super_honk(self, players: PlayerCollection) -> str:
-        """
-        Гусь громко кричит и у всех игроков уменьшается баланс
-
-        :param players: все игроки
-        :return: None
-        """
-
+    def super_honk(self, players: PlayerCollection) -> None:
         loss = self.honk_volume
         for player in players:
             player.change_balance(-loss)
 
-        return f"{self.name} очень громко закричал! Все игроки потеряли {loss}$!"
+        logger.info(f"{self.name} очень громко закричал! Все игроки потеряли {loss}$!")

@@ -1,7 +1,10 @@
+import logging
 import random
 
 from src.objects.casino import Casino
 from src.objects.goose import WarGoose, HonkGoose, Goose
+
+logger = logging.getLogger(__name__)
 
 
 def run_simulation(steps: int = 20, seed: int | None = None) -> None:
@@ -18,8 +21,9 @@ def run_simulation(steps: int = 20, seed: int | None = None) -> None:
     casino.register_goose(WarGoose("Рэмбо", honk_volume=5))
     casino.register_goose(HonkGoose("Крикун", honk_volume=3))
 
-    print("=== Симуляция запущена ===")
+    logger.info("=== Симуляция запущена ===")
     for step in range(steps):
-        print(f"\nШаг {step + 1}")
+        logger.info("")
+        logger.info(f"Шаг {step + 1}")
         casino.simulate_step()
-    print("Симуляция окончена")
+    logger.info("Симуляция окончена")

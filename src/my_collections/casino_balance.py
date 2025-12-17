@@ -1,3 +1,8 @@
+import logging
+
+logger = logging.getLogger(__name__)
+
+
 class CasinoBalance:
     def __init__(self):
         self._balances: dict[str, int] = {}
@@ -5,20 +10,25 @@ class CasinoBalance:
     def update_balance(self, name: str, delta: int):
         """Метод для изменения баланса"""
         if name not in self._balances:
-            raise KeyError(f"Игрок '{name}' не найден в CasinoBalance")
+            self.add_player(name, delta)
+            return
 
         new_balance = self._balances[name] + delta
         self[name] = new_balance
 
     def add_player(self, name: str, balance: int):
         """Добавление игрока"""
+        if name in self._balances:
+            return logger.info("Игрок с этим именем существует")
         self[name] = balance
+        return None
 
     def remove_player(self, name: str):
         """Удалить игрока"""
         if name not in self._balances:
-            raise KeyError(f"Игрок '{name}' не найден")
-        print(f"Игрок '{name}' удалён")
+            logger.info(f"Игрок '{name}' не найден")
+            return
+        logger.info(f"Игрок '{name}' удалён")
         del self._balances[name]
 
     def __len__(self):
@@ -39,9 +49,9 @@ class CasinoBalance:
         self._balances[name] = new_balance
 
         if old is None:
-            print(f"Добавлен игрок '{name}' с балансом {new_balance}$")
+            logger.info(f"Добавлен игрок '{name}' с балансом {new_balance}$")
         else:
-            print(f"{name}: {old}$ -> {new_balance}$")
+            logger.info(f"{name}: {old}$ -> {new_balance}$")
 
     def __repr__(self):
         return f"CasinoBalance({self._balances}$)"

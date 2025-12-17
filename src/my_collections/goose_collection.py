@@ -1,5 +1,8 @@
+import logging
+
 from src.objects.goose import Goose
 
+logger = logging.getLogger(__name__)
 
 class GooseCollection:
     def __init__(self):
@@ -19,14 +22,13 @@ class GooseCollection:
             if g.name == name:
                 self._items.remove(g)
                 return
-        raise ValueError(f"Гусь '{name}' не найден")
+        logger.info(f"Гусь '{name}' не найден")
+        return
 
-    def get_random(self):
-        """Вернуть случайного гуся"""
-        if not self._items:
+    def get_by_index(self, n: int) -> Goose | None:
+        if n < 0 or n >= len(self._items):
             return None
-        import random
-        return random.choice(self._items)
+        return self._items[n]
 
     def __len__(self):
         """Количество гусей"""
@@ -36,8 +38,11 @@ class GooseCollection:
         """Итерация по гусям"""
         return iter(self._items)
 
-    def __getitem__(self, index):
-        """Доступ по индексу и срезу"""
+    def __getitem__(self, index: int | slice) -> Goose:
+        """
+        Поддержка индексов и срезов
+        index может быть int или slice
+        """
         return self._items[index]
 
     def __repr__(self):

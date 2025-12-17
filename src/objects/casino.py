@@ -1,10 +1,13 @@
+import logging
 import random
 
-from src.collections.casino_balance import CasinoBalance
-from src.collections.goose_collection import GooseCollection
-from src.collections.player_collection import PlayerCollection
+from src.my_collections.casino_balance import CasinoBalance
+from src.my_collections.goose_collection import GooseCollection
+from src.my_collections.player_collection import PlayerCollection
 from src.objects.goose import Goose, HonkGoose, WarGoose
 from src.objects.player import Player
+
+logger = logging.getLogger(__name__)
 
 
 class Casino:
@@ -21,72 +24,77 @@ class Casino:
 
     def register_goose(self, goose: Goose) -> Goose:
         self.geese.add(goose)
-        print(f"Добавлен гусь '{goose.name}' (тип={goose.__class__.__name__}, honk={goose.honk_volume})")
+        logger.info(
+            f"Добавлен гусь '{goose.name}' (тип={goose.__class__.__name__}, honk={goose.honk_volume})"
+        )
         return goose
 
     def event_player_bet(self):
         if len(self.players) == 0:
-            print("Пока нет игроков")
+            logger.info("Пока нет игроков")
             return
 
-        player = random.choice(list(self.players))
+        random_player_index = random.randint(0, len(self.players) - 1)
+        player = self.players.get_by_index(random_player_index)
         bet = random.randint(5, 50)
         player.change_balance(-bet)
 
-        print(f"{player.name} делает ставку {bet}$")
+        logger.info(f"{player.name} делает ставку {bet}$")
         self.balance[player.name] = player.balance
 
     def event_player_win(self):
         if len(self.players) == 0:
-            print("Пока нет игроков")
+            logger.info("Пока нет игроков")
             return
 
-        player = random.choice(list(self.players))
+        random_player_index = random.randint(0, len(self.players) - 1)
+        player = self.players.get_by_index(random_player_index)
         win = random.randint(0, 100)
         player.change_balance(win)
 
-        print(f"{player.name} выигрывает {win}$")
+        logger.info(f"{player.name} выигрывает {win}$")
         self.balance[player.name] = player.balance
 
     def event_goose_attack(self):
         war_geese = [g for g in self.geese if isinstance(g, WarGoose)]
         if len(war_geese) == 0 or len(self.players) == 0:
-            print("Пока нет WarGoose или игроков")
+            logger.info("Пока нет WarGoose или игроков")
             return
 
         goose = random.choice(war_geese)
-        player = random.choice(list(self.players))
-
+        random_player_index = random.randint(0, len(self.players) - 1)
+        player = self.players.get_by_index(random_player_index)
         stolen = goose.attack(player)
 
-        print(f"{stolen}")
+        logger.info(f"{stolen}")
         self.balance[player.name] = player.balance
 
     def event_goose_super_honk(self):
         honk_geese = [g for g in self.geese if isinstance(g, HonkGoose)]
         if len(honk_geese) == 0 or len(self.players) == 0:
-            print("Пока нет HonkGoose или игроков")
+            logger.info("Пока нет HonkGoose или игроков")
             return
 
         goose = random.choice(honk_geese)
         special_goose = goose.super_honk(self.players)
-        print(f"{special_goose}")
+        logger.info(f"{special_goose}")
         # обновляем balance казино после super_honk
         for p in self.players:
             self.balance[p.name] = p.balance
 
     def event_steal(self):
         if len(self.geese) == 0 or len(self.players) == 0:
-            print("Пока нет гусей или игроков")
+            logger.info("Пока нет гусей или игроков")
             return
 
-        goose = random.choice(list(self.geese))
-        player = random.choice(list(self.players))
+        goose = random.choice(self.geese)
+        random_player_index = random.randint(0, len(self.players) - 1)
+        player = self.players.get_by_index(random_player_index)
 
         stolen = random.randint(1, 20)
         player.change_balance(-stolen)
 
-        print(f"{goose.name} крадёт {stolen}$ у {player.name}")
+        logger.info(f"{goose.name} крадёт {stolen}$ у {player.name}")
         self.balance[player.name] = player.balance
 
     def simulate_step(self):
