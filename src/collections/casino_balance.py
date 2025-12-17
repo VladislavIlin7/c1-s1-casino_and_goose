@@ -3,7 +3,7 @@ class CasinoBalance:
         self._balances: dict[str, int] = {}
 
     def update_balance(self, name: str, delta: int):
-        """Удобный метод для изменения баланса"""
+        """Метод для изменения баланса"""
         if name not in self._balances:
             raise KeyError(f"Игрок '{name}' не найден в CasinoBalance")
 
@@ -15,7 +15,7 @@ class CasinoBalance:
         self[name] = balance
 
     def remove_player(self, name: str):
-        """Удалить игрока (с логом)"""
+        """Удалить игрока"""
         if name not in self._balances:
             raise KeyError(f"Игрок '{name}' не найден")
         print(f"Игрок '{name}' удалён")
