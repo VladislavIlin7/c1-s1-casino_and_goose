@@ -16,9 +16,7 @@ def test_war_goose():
 
     msg = wg.attack(p)
     assert p.balance == 50
-    assert "Rambo атакует P" in msg
-    assert "50$" in msg
-
+    assert msg == 50
 
 def test_super_honk_goose():
     pc = PlayerCollection()

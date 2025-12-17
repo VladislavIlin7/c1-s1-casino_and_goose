@@ -1,5 +1,10 @@
 import logging
 
+from src.exception.exception import (
+    PlayerAlreadyExistsException,
+    PlayerNotFoundException,
+)
+
 logger = logging.getLogger(__name__)
 
 
@@ -7,7 +12,7 @@ class CasinoBalance:
     def __init__(self):
         self._balances: dict[str, int] = {}
 
-    def update_balance(self, name: str, delta: int):
+    def update_balance(self, name: str, delta: int) -> None:
         """Метод для изменения баланса"""
         if name not in self._balances:
             self.add_player(name, delta)
@@ -15,19 +20,19 @@ class CasinoBalance:
 
         new_balance = self._balances[name] + delta
         self[name] = new_balance
+        return
 
-    def add_player(self, name: str, balance: int):
+    def add_player(self, name: str, balance: int) -> None:
         """Добавление игрока"""
         if name in self._balances:
-            return logger.info("Игрок с этим именем существует")
+            raise PlayerAlreadyExistsException(name)
         self[name] = balance
-        return None
+        return
 
-    def remove_player(self, name: str):
+    def remove_player(self, name: str) -> None:
         """Удалить игрока"""
         if name not in self._balances:
-            logger.info(f"Игрок '{name}' не найден")
-            return
+            raise PlayerNotFoundException(name)
         logger.info(f"Игрок '{name}' удалён")
         del self._balances[name]
 
@@ -41,6 +46,8 @@ class CasinoBalance:
 
     def __getitem__(self, name: str) -> int:
         """Получение баланса по имени"""
+        if name not in self._balances:
+            raise PlayerNotFoundException(name)
         return self._balances[name]
 
     def __setitem__(self, name: str, new_balance: int) -> None:
@@ -54,4 +61,5 @@ class CasinoBalance:
             logger.info(f"{name}: {old}$ -> {new_balance}$")
 
     def __repr__(self):
+        """Возвращает строковое представление объекта"""
         return f"CasinoBalance({self._balances}$)"

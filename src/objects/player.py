@@ -3,9 +3,6 @@ class Player:
         self.name: str = name
         self.balance: int = balance
 
-    def __repr__(self) -> str:
-        return f"Player({self.name}, balance={self.balance})"
-
     def change_balance(self, delta: int) -> None:
         """
         Изменяет баланс игрока
@@ -14,3 +11,7 @@ class Player:
         :return: None
         """
         self.balance += delta
+
+    def __repr__(self) -> str:
+        """Возвращает строковое представление объекта"""
+        return f"Player({self.name}, balance={self.balance})"

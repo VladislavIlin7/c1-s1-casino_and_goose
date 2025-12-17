@@ -1,4 +1,8 @@
 import pytest
+from src.exception.exception import (
+    PlayerAlreadyExistsException,
+    PlayerNotFoundException,
+)
 from src.my_collections.casino_balance import CasinoBalance
 
 
@@ -25,5 +29,21 @@ def test_balance_remove():
 
 def test_balance_errors():
     b = CasinoBalance()
+    b.add_player("Alex", 10)
+
+    with pytest.raises(PlayerAlreadyExistsException):
+        b.add_player("Alex", 20)
 
 
+def test_balance_player_not_found_remove():
+    b = CasinoBalance()
+
+    with pytest.raises(PlayerNotFoundException):
+        b.remove_player("Oleg")
+
+
+def test_balance_player_not_found_getitem():
+    b = CasinoBalance()
+
+    with pytest.raises(PlayerNotFoundException):
+        _ = b["NonExistent"]

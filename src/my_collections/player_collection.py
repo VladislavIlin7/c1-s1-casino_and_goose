@@ -1,3 +1,8 @@
+from src.exception.exception import (
+    IndexOutOfRangeException,
+    PlayerAlreadyExistsException,
+    PlayerNotFoundException, ZeroSlicesException,
+)
 from src.objects.player import Player
 
 
@@ -7,10 +12,15 @@ class PlayerCollection:
 
     def add(self, player: Player) -> None:
         """Добавляет игрока в коллекцию"""
+        for p in self._items:
+            if p.name == player.name:
+                raise PlayerAlreadyExistsException(player.name)
         self._items.append(player)
 
     def remove(self, player: Player) -> None:
         """Удаляет игрока по объекту"""
+        if player not in self._items:
+            raise PlayerNotFoundException(player.name)
         self._items.remove(player)
 
     def remove_by_name(self, name: str) -> None:
@@ -19,7 +29,7 @@ class PlayerCollection:
             if p.name == name:
                 self._items.remove(p)
                 return
-        raise ValueError(f"Игрок '{name}' не найден")
+        raise PlayerNotFoundException(name)
 
     def find_by_name(self, name: str) -> Player | None:
         """Возвращает игрока по имени или None"""
@@ -28,9 +38,10 @@ class PlayerCollection:
                 return p
         return None
 
-    def get_by_index(self, n: int) -> Player | None:
+    def get_by_index(self, n: int) -> Player:
+        """Возвращает игрока по индексу"""
         if n < 0 or n >= len(self._items):
-            return None
+            raise IndexOutOfRangeException(n)
         return self._items[n]
 
     def __len__(self) -> int:
@@ -41,9 +52,21 @@ class PlayerCollection:
         """Позволяет итерироваться по коллекции"""
         return iter(self._items)
 
-    def __getitem__(self, index: int | slice) -> Player:
+    def __getitem__(self, index: int | slice) -> Player | list[Player]:
         """
         Поддержка индексов и срезов
         index может быть int или slice
         """
+        if isinstance(index, int):
+            if index < 0 or index >= len(self._items):
+                raise IndexOutOfRangeException(index)
+
+            return self._items[index]
+
+        if index.step == 0:
+            raise ZeroSlicesException()
         return self._items[index]
+
+    def __repr__(self):
+        """Возвращает строковое представление объекта"""
+        return f'PlayerCollection({self._items})'

@@ -17,79 +17,88 @@ class Casino:
         self.balance = CasinoBalance()
 
     def register_player(self, name: str, initial_balance: int) -> Player:
+        """Регистрация игрока"""
         p = Player(name, initial_balance)
         self.players.add(p)
         self.balance[p.name] = p.balance
         return p
 
     def register_goose(self, goose: Goose) -> Goose:
+        """Регистрация гуся"""
         self.geese.add(goose)
-        logger.info(
-            f"Добавлен гусь '{goose.name}' (тип={goose.__class__.__name__}, honk={goose.honk_volume})"
-        )
+        logger.info(f"Добавлен гусь '{goose.name}' (тип={goose.__class__.__name__}, honk={goose.honk_volume})")
         return goose
 
     def event_player_bet(self):
+        """Игрок делает ставку"""
         if len(self.players) == 0:
             logger.info("Пока нет игроков")
             return
 
-        random_player_index = random.randint(0, len(self.players) - 1)
-        player = self.players.get_by_index(random_player_index)
+        idx = random.randint(0, len(self.players) - 1)
+        player = self.players.get_by_index(idx)
         bet = random.randint(5, 50)
+
         player.change_balance(-bet)
 
         logger.info(f"{player.name} делает ставку {bet}$")
         self.balance[player.name] = player.balance
 
     def event_player_win(self):
+        """Игрок победил"""
         if len(self.players) == 0:
             logger.info("Пока нет игроков")
             return
 
-        random_player_index = random.randint(0, len(self.players) - 1)
-        player = self.players.get_by_index(random_player_index)
+        idx = random.randint(0, len(self.players) - 1)
+        player = self.players.get_by_index(idx)
         win = random.randint(0, 100)
+
         player.change_balance(win)
 
         logger.info(f"{player.name} выигрывает {win}$")
         self.balance[player.name] = player.balance
 
     def event_goose_attack(self):
+        """Гусь атакует"""
         war_geese = [g for g in self.geese if isinstance(g, WarGoose)]
         if len(war_geese) == 0 or len(self.players) == 0:
             logger.info("Пока нет WarGoose или игроков")
             return
 
         goose = random.choice(war_geese)
-        random_player_index = random.randint(0, len(self.players) - 1)
-        player = self.players.get_by_index(random_player_index)
-        stolen = goose.attack(player)
+        idx = random.randint(0, len(self.players) - 1)
+        player = self.players.get_by_index(idx)
 
-        logger.info(f"{stolen}")
+        damage = goose.attack(player)
+
+        logger.info(f"{goose.name} атакует {player.name} и отнимает {damage}$!")
         self.balance[player.name] = player.balance
 
     def event_goose_super_honk(self):
+        """Гусь громко кричит, все игроки теряют деньги"""
         honk_geese = [g for g in self.geese if isinstance(g, HonkGoose)]
         if len(honk_geese) == 0 or len(self.players) == 0:
             logger.info("Пока нет HonkGoose или игроков")
             return
 
         goose = random.choice(honk_geese)
-        special_goose = goose.super_honk(self.players)
-        logger.info(f"{special_goose}")
-        # обновляем balance казино после super_honk
+
+        msg = goose.super_honk(self.players)
+        logger.info(msg)
+
         for p in self.players:
             self.balance[p.name] = p.balance
 
     def event_steal(self):
+        """Гусь крадёт деньги"""
         if len(self.geese) == 0 or len(self.players) == 0:
             logger.info("Пока нет гусей или игроков")
             return
 
-        goose = random.choice(self.geese)
-        random_player_index = random.randint(0, len(self.players) - 1)
-        player = self.players.get_by_index(random_player_index)
+        goose = random.choice(list(self.geese))
+        idx = random.randint(0, len(self.players) - 1)
+        player = self.players.get_by_index(idx)
 
         stolen = random.randint(1, 20)
         player.change_balance(-stolen)
@@ -98,6 +107,7 @@ class Casino:
         self.balance[player.name] = player.balance
 
     def simulate_step(self):
+        """Рандомно выбирает и запускает действие"""
         events = [
             self.event_player_bet,
             self.event_player_win,

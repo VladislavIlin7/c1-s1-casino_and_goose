@@ -1,6 +1,7 @@
 import logging
 import random
 
+from src.exception.exception import NegativeArgumentException
 from src.objects.casino import Casino
 from src.objects.goose import WarGoose, HonkGoose, Goose
 
@@ -8,6 +9,10 @@ logger = logging.getLogger(__name__)
 
 
 def run_simulation(steps: int = 20, seed: int | None = None) -> None:
+    """Запускает симуляцию казино"""
+    if steps < 0:
+        raise NegativeArgumentException()
+
     if seed is not None:
         random.seed(seed)
 

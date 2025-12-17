@@ -12,4 +12,5 @@ class Chip:
         return Chip(self.value + other.value)
 
     def __repr__(self) -> str:
+        """Возвращает строковое представление объекта"""
         return f"Chip({self.value}$)"
